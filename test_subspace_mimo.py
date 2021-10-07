@@ -122,9 +122,9 @@ for line in Lines:
         count += 1
         if count == (len(Lines) - 1):
             break
-            
-            
-            
+
+
+
 X_ident = np.array(X_ident)
 Y_ident = np.array(Y_ident).transpose()
 X_val = np.array(X_val)
@@ -146,15 +146,17 @@ print("input_val.shape {}".format(input_val.shape))
 
 # estimate the Markov parameters
 
-past_value=500 # this is the past window - p 
+# past_value=50 # this is the past window - p 
+past_value=100 # this is thez past window - p 
+
 
 print("Finding markov parameters (whatever that means)...")
 Markov,Z, Y_p_p_l =estimateMarkovParameters(input_ident,Y_ident,past_value)
 
 # estimate the system matrices
 
-for model_order in range(1, 45):
-	model_order = model_order * 10
+for model_order in range(1, 35):
+	model_order = model_order * 1
 	plt.clf()
 	print("running for model order {}...".format(model_order))
 
