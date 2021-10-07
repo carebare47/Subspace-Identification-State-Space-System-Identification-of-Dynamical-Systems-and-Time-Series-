@@ -57,8 +57,10 @@ def estimateMarkovParameters(U,Y,past):
     # form the matrices "Y_p_p_l" and "Z_0_pm1_l"
     # iterate through columns
     for j in range(l+1):
+        print("j {} / {}".format(j, l+1))
         # iterate through rows
         for i in range(past):
+            # print("i {} / {}".format(i, past))
             Z_0_pm1_l[i*(m+r):i*(m+r)+m,j]=U[:,i+j]
             Z_0_pm1_l[i*(m+r)+m:i*(m+r)+m+r,j]=Y[:,i+j]
         Y_p_p_l[:,j]=Y[:,j+past]

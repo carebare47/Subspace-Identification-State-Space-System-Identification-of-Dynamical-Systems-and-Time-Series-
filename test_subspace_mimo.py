@@ -89,8 +89,6 @@ Y_val = []
 
 
 count = 0
-# Strips the newline character
-
 for line in Lines:
     line = line.strip()
     j=0
@@ -103,16 +101,13 @@ for line in Lines:
             if chunk == '':
                 continue
             print("{}".format(chunk))
-            # chunk = chunk.replace('j1@', '')
             chunk = re.sub(r'j.@', '', chunk)
             print("{}".format(chunk.split(':')))
             y_.append(float(chunk.split(':')[0]))
             print("chunk{}: {} ##### {}".format(j, chunk, chunk.split(',')))
-            #x_ = tuple(float(chunk.split(':')[1].split(',')))
             x_ = x_ + tuple(float(x) for x in chunk.split(':')[1].split(','))
             print("y: {} x: {}".format(y_, x_))
             j += 1
-            #break
         if count < train_len:
             X_ident.append(x_)
             Y_ident.append(tuple(y_))
@@ -147,7 +142,7 @@ print("input_val.shape {}".format(input_val.shape))
 # estimate the Markov parameters
 
 # past_value=50 # this is the past window - p 
-past_value=100 # this is thez past window - p 
+past_value=80 # this is thez past window - p 
 
 
 print("Finding markov parameters (whatever that means)...")
@@ -186,9 +181,13 @@ for model_order in range(1, 35):
 	Y_val_prediction,X_val_prediction = systemSimulate(Aid,Bid,Cid,input_val,x0est)
 
 	# compute the errors
+    
+	try:
+		relative_error_percentage, vaf_error_percentage, Akaike_error = modelError(Y_val,Y_val_prediction,r,m,30)
+		print('Final model relative error %f and VAF value %f' %(relative_error_percentage, vaf_error_percentage))
+	except:
+		pass
 
-	#relative_error_percentage, vaf_error_percentage, Akaike_error = modelError(Y_val,Y_val_prediction,r,m,30)
-	#print('Final model relative error %f and VAF value %f' %(relative_error_percentage, vaf_error_percentage))
 
 	# plot the prediction and the real output 
 	plt.plot(Y_val[0,:100],'k',label='Real output')
