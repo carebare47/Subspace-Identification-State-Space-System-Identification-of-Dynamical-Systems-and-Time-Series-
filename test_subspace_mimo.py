@@ -148,9 +148,54 @@ past_value=80 # this is thez past window - p
 print("Finding markov parameters (whatever that means)...")
 Markov,Z, Y_p_p_l =estimateMarkovParameters(input_ident,Y_ident,past_value)
 
+load = True
+save = True
+
+if save == True:
+	import pickle
+	with open('markov.pk', 'wb') as f:
+		# Pickle the 'data' dictionary using the highest protocol available.
+		pickle.dump(Markov, f, pickle.HIGHEST_PROTOCOL)
+
+
+	with open('Y_p_p_l.pk', 'wb') as f:
+		# Pickle the 'data' dictionary using the highest protocol available.
+		pickle.dump(Y_p_p_l, f, pickle.HIGHEST_PROTOCOL)
+
+
+	with open('Z.pk', 'wb') as f:
+		# Pickle the 'data' dictionary using the highest protocol available.
+		pickle.dump(Z, f, pickle.HIGHEST_PROTOCOL)
+
+
+exit()
+
+if load == True:
+
+	with open('markov.pk', 'rb') as f:
+		# The protocol version used is detected automatically, so we do not
+		# have to specify it.
+		Markov = pickle.load(f)
+
+
+	with open('Y_p_p_l.pk', 'rb') as f:
+		# The protocol version used is detected automatically, so we do not
+		# have to specify it.
+		Y_p_p_l = pickle.load(f)
+
+
+	with open('Z.pk', 'rb') as f:
+		# The protocol version used is detected automatically, so we do not
+		# have to specify it.
+		Z = pickle.load(f)
+
+
+
+
+
 # estimate the system matrices
 
-for model_order in range(1, 35):
+for model_order in range(1, 6):
 	model_order = model_order * 1
 	plt.clf()
 	print("running for model order {}...".format(model_order))
@@ -161,14 +206,14 @@ for model_order in range(1, 35):
 
 	Aid,Atilde,Bid,Kid,Cid,s_singular,X_p_p_l = estimateModel(input_ident,Y_ident,Markov,Z,past_value,past_value,model_order)  
 
-	#plt.plot(s_singular, 'x',markersize=8)
-	#plt.xlabel('Singular value index')
-	#plt.ylabel('Singular value magnitude')
-	#plt.yscale('log')
+	plt.plot(s_singular, 'x',markersize=8)
+	plt.xlabel('Singular value index')
+	plt.ylabel('Singular value magnitude')
+	plt.yscale('log')
 
-	#plt.savefig('singular_values.png')
-
-	#plt.show()
+	plt.savefig("singular_values_order.png")
+	plt.clf()
+	# plt.show()
 
 	# estimate the initial state of the validation data
 
