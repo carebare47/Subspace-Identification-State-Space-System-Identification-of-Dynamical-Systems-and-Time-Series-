@@ -12,6 +12,8 @@ from functionsSID import systemSimulate
 from functionsSID import estimateInitial
 from functionsSID import modelError
 
+'''
+
 ###############################################################################
 # Define the model
 
@@ -55,8 +57,53 @@ x0_val=np.random.rand(4,1)
 Y_ident, X_ident=systemSimulate(A,B,C,input_ident,x0_ident)
 Y_val, X_val=systemSimulate(A,B,C,input_val,x0_val)
 
+'''
+
+
+
 #  end of parameter definition
 ###############################################################################
+
+
+
+
+file1 = open('babble_results', 'r')
+Lines = file1.readlines()
+train_len = len(Lines)/2.0
+
+y = []
+x = []
+
+X_ident = []
+Y_ident = []
+
+X_val = []
+Y_val = []
+
+
+count = 0
+# Strips the newline character
+for line in Lines:
+    j=0
+    for chunk in line.split(' th'):
+        chunk = chunk.replace('thj1@', '')
+        y_ = chunk.split(':')[0]
+        print("chunk{}: {} ##### {}".format(j, chunk, chunk.split(',')))
+        x_ = tuple(chunk.split(':')[1].split(','))
+        print("y: {} x: {}".format(y_, x_))
+        j += 1
+        break
+    if count < train_len:
+        X_ident.append(x_)
+        Y_ident.append(y_)
+    else:
+        X_val.append(x_)
+        Y_val.append(y_)
+    count += 1
+    if count == (len(Lines) - 1):
+        break
+
+
 
 ###############################################################################
 # model estimation and validation
