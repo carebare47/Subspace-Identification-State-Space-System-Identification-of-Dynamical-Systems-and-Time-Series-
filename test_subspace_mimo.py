@@ -5,7 +5,7 @@ This is the test code for the subspace identification method.
 import numpy as np
 import matplotlib.pyplot as plt
 from numpy.linalg import inv
-
+import re
 from functionsSID import estimateMarkovParameters
 from functionsSID import estimateModel
 from functionsSID import systemSimulate
@@ -67,18 +67,17 @@ Y_ident, X_ident=systemSimulate(A,B,C,input_ident,x0_ident)
 Y_val, X_val=systemSimulate(A,B,C,input_val,x0_val)
 
 '''
-r=1; m=3 # number of inputs and outputs
+r=3; m=3 # number of inputs and outputs
 
 #  end of parameter definition
 ###############################################################################
 
 
 
-
+import re
 file1 = open('babble_results', 'r')
 Lines = file1.readlines()
 train_len = len(Lines)/2.0
-
 y = []
 x = []
 
@@ -93,38 +92,46 @@ count = 0
 # Strips the newline character
 
 for line in Lines:
+    line = line.strip()
     j=0
-    for chunk in line.split(' th'):
-        chunk = chunk.replace('thj1@', '')
-        y_ = float(chunk.split(':')[0])#  * -1.0
-        print("chunk{}: {} ##### {}".format(j, chunk, chunk.split(',')))
-        #x_ = tuple(float(chunk.split(':')[1].split(',')))
-        x_ = tuple(float(x) for x in chunk.split(':')[1].split(','))
-        print("y: {} x: {}".format(y_, x_))
-        j += 1
-        break
-    if count < train_len:
-        X_ident.append(x_)
-        Y_ident.append(y_)
-    else:
-        X_val.append(x_)
-        Y_val.append(y_)
-    count += 1
-    if count == (len(Lines) - 1):
-        break
-
+    x_ = ()
+    y_ = []
+    print("")
+    print("line: {}".format(line))
+    if True:
+        for chunk in line.split('th'):
+            if chunk == '':
+                continue
+            print("{}".format(chunk))
+            # chunk = chunk.replace('j1@', '')
+            chunk = re.sub(r'j.@', '', chunk)
+            print("{}".format(chunk.split(':')))
+            y_.append(float(chunk.split(':')[0]))
+            print("chunk{}: {} ##### {}".format(j, chunk, chunk.split(',')))
+            #x_ = tuple(float(chunk.split(':')[1].split(',')))
+            x_ = x_ + tuple(float(x) for x in chunk.split(':')[1].split(','))
+            print("y: {} x: {}".format(y_, x_))
+            j += 1
+            #break
+        if count < train_len:
+            X_ident.append(x_)
+            Y_ident.append(tuple(y_))
+        else:
+            X_val.append(x_)
+            Y_val.append(tuple(y_))
+        count += 1
+        if count == (len(Lines) - 1):
+            break
+            
+            
+            
 X_ident = np.array(X_ident)
-Y_ident = np.array([Y_ident])
+Y_ident = np.array(Y_ident).transpose()
 X_val = np.array(X_val)
-Y_val = np.array([Y_val])
+Y_val = np.array(Y_val).transpose()
 
-input_ident = np.random.rand(1,int(train_len))
-input_val = np.random.rand(1,int(train_len))
-
-###############################################################################
-# model estimation and validation
-
-# estimate the Markov parameters
+input_ident = np.random.rand(3,int(train_len))
+input_val = np.random.rand(3,int(train_len))
 
 print("X_ident.shape {}".format(X_ident.shape))
 print("Y_ident.shape {}".format(Y_ident.shape))
@@ -133,6 +140,11 @@ print("Y_val.shape {}".format(Y_val.shape))
 print("input_ident.shape {}".format(input_ident.shape))
 print("input_val.shape {}".format(input_val.shape))
 
+
+###############################################################################
+# model estimation and validation
+
+# estimate the Markov parameters
 
 past_value=500 # this is the past window - p 
 
