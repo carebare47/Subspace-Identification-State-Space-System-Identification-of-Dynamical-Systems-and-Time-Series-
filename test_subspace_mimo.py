@@ -5,6 +5,7 @@ This is the test code for the subspace identification method.
 import numpy as np
 import matplotlib.pyplot as plt
 from numpy.linalg import inv
+import pickle
 import re
 from functionsSID import estimateMarkovParameters
 from functionsSID import estimateModel
@@ -145,30 +146,29 @@ print("input_val.shape {}".format(input_val.shape))
 past_value=80 # this is thez past window - p 
 
 
-print("Finding markov parameters (whatever that means)...")
-Markov,Z, Y_p_p_l =estimateMarkovParameters(input_ident,Y_ident,past_value)
-
 load = True
 save = True
 
 if save == True:
-	import pickle
+        print("Finding markov parameters (whatever that means)...")
+        Markov,Z, Y_p_p_l =estimateMarkovParameters(input_ident,Y_ident,past_value)
+
 	with open('markov.pk', 'wb') as f:
 		# Pickle the 'data' dictionary using the highest protocol available.
-		pickle.dump(Markov, f, pickle.HIGHEST_PROTOCOL)
+		pickle.dump(Markov, f, 2)
 
 
 	with open('Y_p_p_l.pk', 'wb') as f:
 		# Pickle the 'data' dictionary using the highest protocol available.
-		pickle.dump(Y_p_p_l, f, pickle.HIGHEST_PROTOCOL)
+		pickle.dump(Y_p_p_l, f, 2)
 
 
 	with open('Z.pk', 'wb') as f:
 		# Pickle the 'data' dictionary using the highest protocol available.
-		pickle.dump(Z, f, pickle.HIGHEST_PROTOCOL)
+		pickle.dump(Z, f, 2)
 
 
-exit()
+# exit()
 
 if load == True:
 
