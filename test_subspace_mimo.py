@@ -3,6 +3,7 @@ This is the test code for the subspace identification method.
 
 """
 import numpy as np
+import pickle
 import matplotlib.pyplot as plt
 from numpy.linalg import inv
 import pickle
@@ -108,6 +109,7 @@ for line in Lines:
             print("chunk{}: {} ##### {}".format(j, chunk, chunk.split(',')))
             x_ = x_ + tuple(float(x) for x in chunk.split(':')[1].split(','))
             print("y: {} x: {}".format(y_, x_))
+            k += 1
             j += 1
         if count < train_len:
             X_ident.append(x_)
@@ -146,8 +148,9 @@ print("input_val.shape {}".format(input_val.shape))
 past_value=10 # this is thez past window - p 
 
 
+
 load = True
-save = True
+save = False
 
 #if save == True:
 print("Finding markov parameters (whatever that means)...")
