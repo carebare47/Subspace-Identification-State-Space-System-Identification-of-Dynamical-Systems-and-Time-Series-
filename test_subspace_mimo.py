@@ -3,6 +3,7 @@ This is the test code for the subspace identification method.
 
 """
 import numpy as np
+import pickle
 import matplotlib.pyplot as plt
 from numpy.linalg import inv
 import re
@@ -107,6 +108,7 @@ for line in Lines:
             print("chunk{}: {} ##### {}".format(j, chunk, chunk.split(',')))
             x_ = x_ + tuple(float(x) for x in chunk.split(':')[1].split(','))
             print("y: {} x: {}".format(y_, x_))
+            k += 1
             j += 1
         if count < train_len:
             X_ident.append(x_)
@@ -145,30 +147,30 @@ print("input_val.shape {}".format(input_val.shape))
 past_value=80 # this is thez past window - p 
 
 
-print("Finding markov parameters (whatever that means)...")
-Markov,Z, Y_p_p_l =estimateMarkovParameters(input_ident,Y_ident,past_value)
 
 load = True
-save = True
+save = False
 
 if save == True:
-	import pickle
+        print("Finding markov parameters (whatever that means)...")
+        Markov,Z, Y_p_p_l =estimateMarkovParameters(input_ident,Y_ident,past_value)
+
 	with open('markov.pk', 'wb') as f:
 		# Pickle the 'data' dictionary using the highest protocol available.
-		pickle.dump(Markov, f, pickle.HIGHEST_PROTOCOL)
+		pickle.dump(Markov, f, 2)
 
 
 	with open('Y_p_p_l.pk', 'wb') as f:
 		# Pickle the 'data' dictionary using the highest protocol available.
-		pickle.dump(Y_p_p_l, f, pickle.HIGHEST_PROTOCOL)
+		pickle.dump(Y_p_p_l, f, 2)
 
 
 	with open('Z.pk', 'wb') as f:
 		# Pickle the 'data' dictionary using the highest protocol available.
-		pickle.dump(Z, f, pickle.HIGHEST_PROTOCOL)
+		pickle.dump(Z, f, 2)
 
 
-exit()
+# exit()
 
 if load == True:
 
