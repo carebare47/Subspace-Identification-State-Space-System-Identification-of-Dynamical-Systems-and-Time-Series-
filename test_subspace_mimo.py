@@ -6,6 +6,7 @@ import numpy as np
 import pickle
 import matplotlib.pyplot as plt
 from numpy.linalg import inv
+import pickle
 import re
 from functionsSID import estimateMarkovParameters
 from functionsSID import estimateModel
