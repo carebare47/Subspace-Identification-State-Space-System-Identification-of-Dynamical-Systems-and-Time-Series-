@@ -14,7 +14,7 @@ from functionsSID import estimateInitial
 from functionsSID import modelError
 
 
-'''
+
 ###############################################################################
 # Define the model
 
@@ -35,10 +35,10 @@ Cc=np.matrix([[1, 0, 0, 0]])
 r=1; m=1 # number of inputs and outputs
 # total number of time samples
 
-time=300
+time=1500
 # discretization constant
 
-sampling=0.05
+sampling=0.01
 
 # model discretization
 
@@ -67,76 +67,7 @@ x0_val=np.random.rand(4,1)
 Y_ident, X_ident=systemSimulate(A,B,C,input_ident,x0_ident)
 Y_val, X_val=systemSimulate(A,B,C,input_val,x0_val)
 
-'''
-r=3; m=3 # number of inputs and outputs
-
-#  end of parameter definition
-###############################################################################
-
-
-
-import re
-file1 = open('babble_results_imp', 'r')
-Lines = file1.readlines()
-train_len = len(Lines)/2.0
-y = []
-x = []
-
-X_ident = []
-Y_ident = []
-
-X_val = []
-Y_val = []
-
-
-count = 0
-for line in Lines:
-    line = line.strip()
-    j=0
-    x_ = ()
-    y_ = []
-    print("")
-    print("line: {}".format(line))
-    if True:
-        for chunk in line.split('th'):
-            if chunk == '':
-                continue
-            print("{}".format(chunk))
-            chunk = re.sub(r'j.@', '', chunk)
-            print("{}".format(chunk.split(':')))
-            y_.append(float(chunk.split(':')[0]))
-            print("chunk{}: {} ##### {}".format(j, chunk, chunk.split(',')))
-            x_ = x_ + tuple(float(x) for x in chunk.split(':')[1].split(','))
-            print("y: {} x: {}".format(y_, x_))
-            j += 1
-        if count < train_len:
-            X_ident.append(x_)
-            Y_ident.append(tuple(y_))
-        else:
-            X_val.append(x_)
-            Y_val.append(tuple(y_))
-        count += 1
-        if count == (len(Lines) - 1):
-            break
-
-
-
-X_ident = np.array(X_ident)
-Y_ident = np.array(Y_ident).transpose()
-X_val = np.array(X_val)
-Y_val = np.array(Y_val).transpose()
-
-input_ident = np.random.rand(3,int(train_len))
-input_val = np.random.rand(3,int(train_len))
-
-print("X_ident.shape {}".format(X_ident.shape))
-print("Y_ident.shape {}".format(Y_ident.shape))
-print("X_val.shape {}".format(X_val.shape))
-print("Y_val.shape {}".format(Y_val.shape))
-print("input_ident.shape {}".format(input_ident.shape))
-print("input_val.shape {}".format(input_val.shape))
-
-
+print("a_pre: {}".format(A))
 ###############################################################################
 # model estimation and validation
 
@@ -146,57 +77,15 @@ print("input_val.shape {}".format(input_val.shape))
 past_value=10 # this is thez past window - p 
 
 
-load = True
-save = True
-
-#if save == True:
 print("Finding markov parameters (whatever that means)...")
 Markov,Z, Y_p_p_l =estimateMarkovParameters(input_ident,Y_ident,past_value)
-'''
-	with open('markov.pk', 'wb') as f:
-		# Pickle the 'data' dictionary using the highest protocol available.
-		pickle.dump(Markov, f, 2)
-
-
-	with open('Y_p_p_l.pk', 'wb') as f:
-		# Pickle the 'data' dictionary using the highest protocol available.
-		pickle.dump(Y_p_p_l, f, 2)
-
-
-	with open('Z.pk', 'wb') as f:
-		# Pickle the 'data' dictionary using the highest protocol available.
-		pickle.dump(Z, f, 2)
-
-
-# exit()
-
-if load == True:
-
-	with open('markov.pk', 'rb') as f:
-		# The protocol version used is detected automatically, so we do not
-		# have to specify it.
-		Markov = pickle.load(f)
-
-
-	with open('Y_p_p_l.pk', 'rb') as f:
-		# The protocol version used is detected automatically, so we do not
-		# have to specify it.
-		Y_p_p_l = pickle.load(f)
-
-
-	with open('Z.pk', 'rb') as f:
-		# The protocol version used is detected automatically, so we do not
-		# have to specify it.
-		Z = pickle.load(f)
 
 
 
-
-'''
 # estimate the system matrices
 
-for model_order in range(1, 6):
-	model_order = model_order * 1
+for model_order in range(1, 8):
+	# model_order = model_order * 1
 	plt.clf()
 	print("running for model order {}...".format(model_order))
 
@@ -220,6 +109,8 @@ for model_order in range(1, 6):
 	h=10 # window for estimating the initial state
 
 	x0est=estimateInitial(Aid,Bid,Cid,input_val,Y_val,h)
+
+	print("a_post_order{}: {}".format(model_order, Aid))
 
 	# simulate the open loop model 
 
